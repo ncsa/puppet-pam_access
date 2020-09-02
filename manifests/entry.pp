@@ -102,26 +102,30 @@ define pam_access::entry (
 
   case $ensure {
     'present': {
-      $create_cmds = $real_position ? {
-        'after'  => [
-          "set access[last()+1] ${permission}",
-          "set access[last()]/${context} ${userstr}",
-          "set access[last()]/origin ${origin}",
-        ],
-        'before' => [
-          'ins access before access[1]',
-          "set access[1] ${permission}",
-          "set access[1]/${context} ${userstr}",
-          "set access[1]/origin ${origin}",
-        ],
-        '-1'     => [
-          'ins access before access[last()]',
-          "set access[last()-1] ${permission}",
-          "set access[last()-1]/${context} ${userstr}",
-          "set access[last()-1]/origin ${origin}",
-        ],
+      case $real_position {
+        'after': {
+          $location = 'last()'
+          $ins_cmd = "set access[last()+1] ${permission}"
+        }
+        'before': {
+          $location = '1'
+          $ins_cmd = 'ins access before access[1]'
+        }
+        '-1': {
+          $location = 'last()-1'
+          $ins_cmd = 'ins access before access[last()]'
+        }
+        default: { fail("Invalid real_position ${real_position}") }
       }
-
+      $set_cmds = [
+        "set access[${location}] ${permission}",
+        "set access[${location}]/${context} ${userstr}",
+      ]
+      $origin_cmds = $origin.split( / +/ ).map | $i, $val | {
+        $j = sprintf( String( $i + 1 ), '%03d' )
+        "set access[${location}]/origin[${j}] ${val}"
+      }
+      $create_cmds = [ $ins_cmd ] + $set_cmds + $origin_cmds
       augeas { "pam_access/${context}/${permission}:${userstr}:${origin}/${ensure}":
         changes => $create_cmds,
         onlyif  => "match access[. = '${permission}'][${context} = '${userstr}'][origin = '${origin}'] size == 0",
