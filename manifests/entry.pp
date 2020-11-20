@@ -100,6 +100,15 @@ define pam_access::entry (
     $context = 'user'
   }
 
+  # Prepare origin match parts
+  $origin_parts = $origin.split( / +/ )
+  $origin_match_list = $origin_parts.map() | $i, $part | {
+    $j = $i + 1
+    "[origin[${j}] = '${part}']"
+  }
+  $origin_matches = join( $origin_match_list )
+
+  # Make augeas cmds
   case $ensure {
     'present': {
       case $real_position {
@@ -128,15 +137,15 @@ define pam_access::entry (
       $create_cmds = [ $ins_cmd ] + $set_cmds + $origin_cmds
       augeas { "pam_access/${context}/${permission}:${userstr}:${origin}/${ensure}":
         changes => $create_cmds,
-        onlyif  => "match access[. = '${permission}'][${context} = '${userstr}'][origin = '${origin}'] size == 0",
+        onlyif  => "match access[. = '${permission}'][${context} = '${userstr}']${origin_matches} size == 0",
       }
     }
     'absent': {
       augeas { "pam_access/${context}/${permission}:${userstr}:${origin}/${ensure}":
         changes => [
-          "rm access[. = '${permission}'][${context} = '${userstr}'][origin = '${origin}']",
+          "rm access[. = '${permission}'][${context} = '${userstr}']${origin_matches}",
         ],
-        onlyif  => "match access[. = '${permission}'][${context} = '${userstr}'][origin = '${origin}'] size > 0",
+        onlyif  => "match access[. = '${permission}'][${context} = '${userstr}']${origin_matches} size > 0",
       }
     }
     default: { fail("Invalid ensure: ${ensure}") }
