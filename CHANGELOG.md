@@ -1,3 +1,7 @@
+2021-1-26 (1.0.3) Frank Luo
+        * convert to pdk
+        * fix spec tests to use augeas_core for puppet6
+
 2020-08-24 (1.0.2) Brad Koby
         * Bump stdlib max
         * Remove pe requirement
