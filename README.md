@@ -1,10 +1,7 @@
 pam_access
 =============
-
-[![Build Status](https://travis-ci.org/MiamiOH/puppet-pam_access.svg)](https://travis-ci.org/MiamiOH/puppet-pam_access)
-[![Puppet Forge](https://img.shields.io/puppetforge/v/MiamiOH/pam_access.svg)](https://forge.puppet.com/MiamiOH/pam_access)
-[![Puppet Forge Downloads](https://img.shields.io/puppetforge/dt/MiamiOH/pam_access.svg)](https://forge.puppet.com/MiamiOH/pam_access)
-[![Puppet Forge Score](https://img.shields.io/puppetforge/f/MiamiOH/pam_access.svg)](https://forge.puppet.com/MiamiOH/pam_access/scores)
+[![yamllint](https://github.com/ncsa/puppet-pam_access/actions/workflows/yamllint.yml/badge.svg)](https://github.com/ncsa/puppet-pam_access/actions/workflows/yamllint.yml)
+[![pdk-validate](https://github.com/ncsa/puppet-pam_access/actions/workflows/pdk-validate.yml/badge.svg)](https://github.com/ncsa/puppet-pam_access/actions/workflows/pdk-validate.yml)
 
 This module manages **pam_access** entries stored in `/etc/security/access.conf`.  It
 requires Augeas >= 0.8.0.
