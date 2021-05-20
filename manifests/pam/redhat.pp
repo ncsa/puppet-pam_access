@@ -1,22 +1,37 @@
-# Class: pam_access::pam::redhat
+# @summary Implement pam_access on RHEL8 systems
 #
-# Private class - Not to be used directly
-# See README.md for usage information
+# @param authselect_features
+#   Valid only for RHEL8
 #
-# [Remember: No empty lines between comments and class definition]
-class pam_access::pam::redhat {
+#   Default:
+#   * `with-pamaccess`
+#
+class pam_access::pam::redhat (
+  Array[String] $authselect_features,
+) {
 
-  $authconfig_flags = $pam_access::ensure ? {
-    'present' => join($pam_access::enable_pamaccess_flags, ' '),
-    'absent'  => join($pam_access::disable_pamaccess_flags, ' '),
-  }
-  $authconfig_update_cmd = "/usr/sbin/authconfig ${authconfig_flags} --update"
-  $authconfig_test_cmd   = "/usr/sbin/authconfig ${authconfig_flags} --test"
-  $authconfig_check_cmd  = "/usr/bin/test \"`${authconfig_test_cmd}`\" = \"`/usr/sbin/authconfig --test`\""
+  # RHEL8 (and newer?) use authselect
 
-  exec { 'authconfig-access':
-    command => $authconfig_update_cmd,
-    unless  => $authconfig_check_cmd,
+  $_ensure = lookup( 'pam_access::ensure' )
+
+  # Only do work if a profile is active
+  $_profile = $facts['authselect']['profile']
+  if $facts['authselect']['profile'] =~ String[1] {
+
+    $authselect_features.each | $feature_name | {
+      if $feature_name in $facts['authselect']['features'] {
+        if $_ensure == 'absent' {
+          # feature is present but should be absent
+          exec { "/usr/bin/authselect disable-feature ${feature_name}": }
+        }
+      } else {
+        if $_ensure == 'present' {
+          # feature is not present but should be
+          exec { "/usr/bin/authselect enable-feature ${feature_name}": }
+        }
+      }
+    }
+
   }
 
 }

@@ -1,0 +1,7 @@
+---
+pam_access::pam::redhat7::disable_pamaccess_flags:
+  - "--enablelocauthorize"
+  - "--disablepamaccess"
+pam_access::pam::redhat7::enable_pamaccess_flags:
+  - "--enablelocauthorize"
+  - "--enablepamaccess"

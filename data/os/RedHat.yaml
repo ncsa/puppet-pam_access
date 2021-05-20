@@ -1,0 +1,3 @@
+---
+pam_access::pam::redhat::authselect_features:
+  - "with-pamaccess"

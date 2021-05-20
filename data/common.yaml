@@ -1,1 +1,4 @@
---- {}
+---
+pam_access::ensure: "present"
+pam_access::entries: {}
+pam_access::manage_pam: false

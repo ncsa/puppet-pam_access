@@ -1,17 +1,21 @@
-# Class: pam_access::pam
+# @summary Private class - Not to be used directly
 #
-# Private class - Not to be used directly
 # See README.md for usage information
 #
-# [Remember: No empty lines between comments and class definition]
 class pam_access::pam {
 
-  case $::osfamily {
+  $_os_ver = Integer.new( $facts['os']['release']['major'] )
+
+  case $facts['os']['family'] {
     'RedHat': {
-      anchor { 'pam_access::pam::begin': } -> class { 'pam_access::pam::redhat': } -> anchor { 'pam_access::pam::end': }
+      if $_os_ver <= 7 {
+        contain pam_access::pam::redhat7
+      } else {
+        contain pam_access::pam::redhat
+      }
     }
     'Debian': {
-      anchor { 'pam_access::pam::begin': } -> class { 'pam_access::pam::debian': } -> anchor { 'pam_access::pam::end': }
+      contain pam_access::pam::debian
     }
     default: {}
   }
