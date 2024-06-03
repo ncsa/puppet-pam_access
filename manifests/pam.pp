@@ -3,7 +3,6 @@
 # See README.md for usage information
 #
 class pam_access::pam {
-
   $_os_ver = Integer.new( $facts['os']['release']['major'] )
 
   case $facts['os']['family'] {
@@ -22,5 +21,4 @@ class pam_access::pam {
     }
     default: {}
   }
-
 }

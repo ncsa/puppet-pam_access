@@ -17,7 +17,6 @@ class pam_access::pam::redhat7 (
   Array[String] $enable_pamaccess_flags,
   Array[String] $disable_pamaccess_flags,
 ) {
-
   $_ensure = lookup( 'pam_access::ensure' )
 
   # RHEL7 and earlier use authconfig
@@ -33,5 +32,4 @@ class pam_access::pam::redhat7 (
     command => $authconfig_update_cmd,
     unless  => $authconfig_check_cmd,
   }
-
 }

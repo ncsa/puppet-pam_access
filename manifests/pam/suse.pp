@@ -9,7 +9,6 @@
 class pam_access::pam::suse (
   Array[String] $authselect_features,
 ) {
-
   # SUSE use authselect
 
   $_ensure = lookup( 'pam_access::ensure' )
@@ -17,7 +16,6 @@ class pam_access::pam::suse (
   # Only do work if a profile is active
   $_profile = $facts['authselect']['profile']
   if $facts['authselect']['profile'] =~ String[1] {
-
     $authselect_features.each | $feature_name | {
       if $feature_name in $facts['authselect']['features'] {
         if $_ensure == 'absent' {
@@ -31,7 +29,5 @@ class pam_access::pam::suse (
         }
       }
     }
-
   }
-
 }

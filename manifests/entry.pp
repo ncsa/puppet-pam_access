@@ -52,7 +52,6 @@ define pam_access::entry (
   $origin     = 'LOCAL',
   $position   = undef,
 ) {
-
   include pam_access
 
   # validate params
@@ -134,7 +133,7 @@ define pam_access::entry (
         $j = sprintf( String( $i + 1 ), '%03d' )
         "set access[${location}]/origin[${j}] ${val}"
       }
-      $create_cmds = [ $ins_cmd ] + $set_cmds + $origin_cmds
+      $create_cmds = [$ins_cmd] + $set_cmds + $origin_cmds
       augeas { "pam_access/${context}/${permission}:${userstr}:${origin}/${ensure}":
         changes => $create_cmds,
         onlyif  => "match access[. = '${permission}'][${context} = '${userstr}']${origin_matches} size == 0",
@@ -150,5 +149,4 @@ define pam_access::entry (
     }
     default: { fail("Invalid ensure: ${ensure}") }
   }
-
 }

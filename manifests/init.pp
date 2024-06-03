@@ -28,7 +28,6 @@ class pam_access (
   Boolean $manage_pam,
   Hash    $entries,
 ) {
-
   validate_re($ensure, ['\Aabsent|present\Z'])
 
   file { '/etc/security/access.conf':
@@ -40,9 +39,8 @@ class pam_access (
 
   if $manage_pam {
     contain pam_access::pam
-    Class[ 'pam_access::pam' ] -> File[ '/etc/security/access.conf' ]
+    Class['pam_access::pam'] -> File['/etc/security/access.conf']
   }
 
   create_resources('pam_access::entry', $entries)
-
 }
