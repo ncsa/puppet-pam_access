@@ -11,11 +11,14 @@ class pam_access::pam {
       if $_os_ver <= 7 {
         contain pam_access::pam::redhat7
       } else {
-        contain pam_access::pam::redhat
+        contain pam_access::pam::authselect
       }
     }
     'Debian': {
       contain pam_access::pam::debian
+    }
+    'Suse': {
+      contain pam_access::pam::authselect
     }
     default: {}
   }

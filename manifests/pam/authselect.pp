@@ -1,16 +1,16 @@
-# @summary Implement pam_access on RHEL8 systems
-#
+# @summary Implement pam_access on systems that support authselect
+# 
 # @param authselect_features
-#   Valid only for RHEL8
+#   Valid only for RHEL8+ and SUSE
 #
 #   Default:
 #   * `with-pamaccess`
 #
-class pam_access::pam::redhat (
+class pam_access::pam::authselect (
   Array[String] $authselect_features,
 ) {
 
-  # RHEL8 (and newer?) use authselect
+  # RHEL8+ and SUSE use authselect
 
   $_ensure = lookup( 'pam_access::ensure' )
 
